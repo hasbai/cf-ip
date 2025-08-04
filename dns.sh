@@ -1,12 +1,12 @@
 #!/bin/bash
 
-header="Authorization: Bearer $token"
+header="Authorization: Bearer $TOKEN"
 base='https://api.cloudflare.com/client/v4'
 
-zone_id=$(curl -s "$base/zones?name=$domain" -H "$header" | jq -r '.result[].id')
+zone_id=$(curl -s "$base/zones?name=$DOMAIN" -H "$header" | jq -r '.result[].id')
 echo "Zone ID: $zone_id"
 
-ids=$(curl -s "$base/zones/$zone_id/dns_records?name=$fqdn" -H "$header" | jq -r '.result[].id')
+ids=$(curl -s "$base/zones/$zone_id/dns_records?name=$FQDN" -H "$header" | jq -r '.result[].id')
 
 for id in $ids; do
   curl -s -X DELETE "$base/zones/$zone_id/dns_records/$id" -H "$header"
@@ -17,7 +17,7 @@ for ip in "${ips[@]}"; do
   curl -s -X POST "$base/zones/$zone_id/dns_records" -H "$header" \
     -H "Content-Type: application/json" \
     -d '{
-          "name": "'"$fqdn"'",
+          "name": "'"$FQDN"'",
           "type": "A",
           "content": "'"$ip"'"
         }'
